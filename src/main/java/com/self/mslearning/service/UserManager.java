@@ -9,4 +9,6 @@ public interface UserManager {
     List<MyUser> myUserList = new ArrayList<MyUser>();
 
     List<MyUser> addUser(MyUser myUser);
+
+    List<MyUser> getUsers(String sName);
 }
