@@ -18,7 +18,7 @@ public class UserManagerImpl implements UserManager {
     @Override
     public List<MyUser> getUsers(String sName) {
         if(sName != null) {
-            List<MyUser> myLocalUserList = new ArrayList<MyUser>();
+            List<MyUser> myLocalUserList = new ArrayList<>();
             myUserList.forEach(myUser -> {
                 if(myUser.getfName().contains(sName) || myUser.getlName().contains(sName) || myUser.getUserName().contains(sName))
                     myLocalUserList.add(myUser);
@@ -26,5 +26,19 @@ public class UserManagerImpl implements UserManager {
             return myLocalUserList;
         }else
             return myUserList;
+    }
+
+    @Override
+    public List<MyUser> removeUser(String sName) {
+        if(sName != null){
+            List<MyUser> delUser = new ArrayList<>();
+            myUserList.forEach(myUser -> {
+                if(myUser.getfName().equalsIgnoreCase(sName) || myUser.getlName().equalsIgnoreCase(sName) || myUser.getUserName().equalsIgnoreCase(sName))
+                    delUser.add(myUser);
+            });
+
+            delUser.forEach(myUserList::remove);
+        }
+        return myUserList;
     }
 }

@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface UserManager {
-    List<MyUser> myUserList = new ArrayList<MyUser>();
+    List<MyUser> myUserList = new ArrayList<>();
 
     List<MyUser> addUser(MyUser myUser);
 
     List<MyUser> getUsers(String sName);
+
+    List<MyUser> removeUser(String sName);
 }
