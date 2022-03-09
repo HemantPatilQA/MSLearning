@@ -8,13 +8,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class MyUserController {
 
-    //List<MyUser>  myUserList = new ArrayList<MyUser>();
     @Autowired UserManagerImpl myUserMgr;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -24,25 +22,16 @@ public class MyUserController {
 
     @PostMapping(value = "/userManager/addUser", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<List<MyUser>> addUser(@RequestBody MyUser myUser){
-        return new ResponseEntity<List<MyUser>>(myUserMgr.addUser(myUser), HttpStatus.CREATED);
+        return new ResponseEntity<>(myUserMgr.addUser(myUser), HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/userManager/getUser", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<List<MyUser>> getUsers(@RequestParam(value = "name", required = false) String sName){
-        return new ResponseEntity<List<MyUser>>(myUserMgr.getUsers(sName), HttpStatus.OK);
+        return new ResponseEntity<>(myUserMgr.getUsers(sName), HttpStatus.OK);
     }
 
-/*    @DeleteMapping("/userManager/deleteUser")
+    @DeleteMapping("/userManager/deleteUser")
     public @ResponseBody ResponseEntity<List<MyUser>> removeUser(@RequestParam(value = "name", required = false) String sName){
-        if(sName != null) {
-            List<MyUser> myLocalUserList = new ArrayList<MyUser>();
-            myUserList.forEach(myUser -> {
-                if (myUser.getfName().contains(sName) || myUser.getlName().contains(sName) || myUser.getUserName().contains(sName))
-                    myLocalUserList.add(myUser);
-            });
-
-            myLocalUserList.forEach(myUser -> myUserList.remove(myUser));
-        }
-        return new ResponseEntity<List<MyUser>>(myUserList, HttpStatus.OK);
-    }*/
+        return new ResponseEntity<>(myUserMgr.removeUser(sName), HttpStatus.OK);
+    }
 }
