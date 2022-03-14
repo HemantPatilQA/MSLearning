@@ -1,5 +1,6 @@
 package com.self.mslearning.controller;
 
+import com.self.mslearning.exception.RecordNotFoundException;
 import com.self.mslearning.model.MyUser;
 import com.self.mslearning.service.impl.UserManagerImpl;
 import org.json.JSONObject;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.w3c.dom.Entity;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,13 +21,13 @@ public class MyUserController {
 
     @Autowired UserManagerImpl myUserMgr;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    /*@RequestMapping(value = "/", method = RequestMethod.GET)
     public String Hello(){
         return "Hello World ";
-    }
+    }*/
 
     @PostMapping(value = "/userManager/addUser", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody ResponseEntity<Object> addUser(@RequestBody MyUser myUser){
+    public @ResponseBody ResponseEntity<Object> addUser(@Valid @RequestBody MyUser myUser){
         List<JSONObject> response = new ArrayList<>();
         JSONObject resCode = new JSONObject();
         resCode.put("ResponseCode", "201");
@@ -44,15 +46,16 @@ public class MyUserController {
             response.add(user);
         });*/
         System.out.println(response);
+        myUserMgr.addUser(myUser);
         //return new ResponseEntity<Object>(response, HttpStatus.CREATED);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                "Users", myUserMgr.addUser(myUser),
+                "Users", myUser,
                 "ResponseMessage", "User Added Successfully",
                 "ResponseCode", "201"
         ));
     }
 
-    @GetMapping(path = "/hello", produces=MediaType.APPLICATION_JSON_VALUE)
+    /*@GetMapping(path = "/hello", produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> sayHello()
     {
         //Get data from service layer into entityList.
@@ -64,11 +67,14 @@ public class MyUserController {
             entities.add(entity);
         //}
         return new ResponseEntity<Object>(entities, HttpStatus.OK);
-    }
+    }*/
 
     @GetMapping(value = "/userManager/getUser", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<List<MyUser>> getUsers(@RequestParam(value = "name", required = false) String sName){
-        return new ResponseEntity<>(myUserMgr.getUsers(sName), HttpStatus.OK);
+        List<MyUser> myLocalUserList = myUserMgr.getUsers(sName);
+        if(myLocalUserList.size() == 0)
+            throw new RecordNotFoundException("No User found with FirstName, LastName or UserName containing : " + sName);
+        return new ResponseEntity<>(myLocalUserList, HttpStatus.OK);
     }
 
     @DeleteMapping("/userManager/deleteUser")
